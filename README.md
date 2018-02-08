@@ -11,5 +11,7 @@ ffmpeg -i input.gif -vf scale=420:-2,format=yuv420p out.mp4
 # 命令行
 
 ```
-ffmpeg -t 5 -ss 00:00:00 -i test1.gif -i test1.mp3 -c:v libx264 -c:a aac -b:a 128k -vf scale=420:-2,format=yuv420p out.mp4
-```# go-ffmpeg-web
+ffmpeg -t 5 -ss 00:00:00 -i test.gif -i test.mp3 -c:v libx264 -c:a aac -b:a 128k -vf scale=420:-2,format=yuv420p out.mp4
+```
+
+# go-ffmpeg-web
