@@ -46,6 +46,7 @@ $(document).ready(function() {
 			$("#gif").next().text("开始上传")
 			var gif = $("#gif")[0].files[0]
 			formData.append("gif", gif);  
+			console.log("upload form data", formData);
 
             $.ajax({
                 url: "/api/upload",
