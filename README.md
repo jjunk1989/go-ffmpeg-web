@@ -1,3 +1,15 @@
+# install
+
+```
+go get github.com/jjunk1989/go-ffmpeg-web
+```
+
+# use
+
+```
+go build -i
+```
+
 # 参考链接
 
 * [ffmpeg](https://www.ffmpeg.org/documentation.html)
