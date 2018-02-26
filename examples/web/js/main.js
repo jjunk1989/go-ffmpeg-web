@@ -38,18 +38,20 @@ $(document).ready(function() {
 		})
 	})
 	
-	$("#submit").on("click", function(e) {
+	$("#compose").on("click", function(e) {
 		e.preventDefault()
-		console.log("submit")
+		console.log("on compose")
 		var formData = new FormData();
-		if ($("#gif")[0].files.length > 0) {
+		if ($("#gif")[0].files.length > 0 && $("#mp3")[0].files.length > 0) {
 			$("#gif").next().text("开始上传")
 			var gif = $("#gif")[0].files[0]
+			var mp3 = $("#mp3")[0].files[0]
 			formData.append("files", gif);  
+			formData.append("files", mp3);
 			console.log("upload form data", formData);
 
             $.ajax({
-                url: "/api/upload",
+                url: "/api/compose",
                 type: "POST",
                 data: formData,
                 /**
@@ -65,7 +67,8 @@ $(document).ready(function() {
                     if (data.code == 0) {
                         $("#gif").next().text("上传成功!")
                     } else {
-                        $("#gif").next().text("上传失败", + data.message)
+                        $("#gif").next().text("上传失败" + data.message)
+						$("#mp3").next().text("上传失败" + data.message)
                     }
                 },
                 error: function (e) {
@@ -74,7 +77,10 @@ $(document).ready(function() {
                 }
             }); 
 		} else {
-			$("#gif").next().text("请选择 GIF 文件!")
+			if (!$("#gif")[0].files.length)
+				$("#gif").next().text("请选择 GIF 文件!")
+			if (!$("#mp3")[0].files.length)
+				$("#mp3").next().text("请选择 MP3 文件!")
 		}
 	})
 })
