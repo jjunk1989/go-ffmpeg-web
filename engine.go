@@ -14,6 +14,8 @@ const (
 func engine() *gin.Engine {
 
 	r := gin.Default()
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	// r.MaxMultipartMemory = 10 << 20 // 10 MiB
 
 	api := r.Group("api")
 
@@ -21,6 +23,7 @@ func engine() *gin.Engine {
 		api.GET("test", handleTest)
 		api.POST("upload", handleUpload)
 	}
+
 	// for web test
 	r.Static("/examples", "./examples/web")
 
