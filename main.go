@@ -4,6 +4,7 @@ import (
 	"github.com/sony/sonyflake"
 )
 
+// for task id
 var sf *sonyflake.Sonyflake
 
 func init() {

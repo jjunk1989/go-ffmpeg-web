@@ -40,8 +40,12 @@ $(document).ready(function() {
 	
 	$("#compose").on("click", function(e) {
 		e.preventDefault()
+
 		console.log("on compose")
+		var s = Date.now()
+		$("#compose").attr("disabled", "disabled")
 		var formData = new FormData();
+
 		if ($("#gif")[0].files.length > 0 && $("#mp3")[0].files.length > 0) {
 			$("#gif").next().text("开始上传")
 			var gif = $("#gif")[0].files[0]
@@ -64,16 +68,19 @@ $(document).ready(function() {
                 */
                 processData: false,
                 success: function (data) {
+					var cost = (Date.now() - s)
+					$("#compose").removeAttr("disabled", "disabled")
                     if (data.code == 0) {
-                        $("#gif").next().text("上传成功!")
+                        $("#compose").next().text("上传成功! " + cost + "ms")
+						$("#composeVideo").attr("src", "/upload/" + data.result.video)
                     } else {
-                        $("#gif").next().text("上传失败" + data.message)
-						$("#mp3").next().text("上传失败" + data.message)
+                        $("#compose").next().text("上传失败" + data.message)
                     }
                 },
                 error: function (e) {
 					console.log("上传失败:", e)
-                    $("#gif").next().text("上传失败:" + e)
+					$("#compose").removeAttr("disabled", "disabled")
+                    $("#compose").next().text("上传失败:" + e)
                 }
             }); 
 		} else {

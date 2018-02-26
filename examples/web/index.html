@@ -19,6 +19,10 @@
 	<style>
 		.line {
 			margin-bottom: 15px;
+			border-bottom:1px solid #333;
+		}
+		video {
+			border: 1px solid #333
 		}
 	</style>
   </head>
@@ -35,17 +39,19 @@
 			<button class="btn btn-default" id="testConver">测试转换</button>
 			<p></p>
 		</div>
-		<div class="col-md-12">
+		<div class="col-md-12 line">
 			<form>
 			  <div class="form-group">
 			    <label for="gif">上传 GIF </label>
-			    <input type="file" id="gif" accept="image/jpeg">
+			    <input type="file" id="gif" accept="image/gif">
 			    <p class="help-block">请上传 GIF 文件.</p>
 				<label for="gif">上传 mp3 </label>
-			    <input type="file" id="mp3" accept="audio/jpeg">
+			    <input type="file" id="mp3" accept="audio/mp3">
 			    <p class="help-block">请上传 mp3 文件.</p>
 			  </div>
 			  <button type="submit" class="btn btn-default" id="compose">上传合成</button>
+			  <p class="help-block"></p>
+			  <video id="composeVideo" autoplay="autoplay" />
 			</form>
 		</div>
 	</div>

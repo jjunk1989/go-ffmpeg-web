@@ -9,9 +9,12 @@ import (
 const CMD_BASE = "ffmpeg"
 
 var installErr = errors.New("Cant find ffmpeg. Please check install and env")
+var inputErr = errors.New("must have input")
+var cmdErr = errors.New("run cmd error")
 
-type Media struct {
-	Inputs      []string
+type Compose struct {
+	InputGIF    string
+	InputMp3    string
 	Time        string
 	StartTime   string
 	VideoCode   string
@@ -21,7 +24,7 @@ type Media struct {
 	Output      string
 }
 
-func (m Media) CheckSupport() (err error) {
+func (m Compose) CheckSupport() (err error) {
 	_, err = exec.LookPath(CMD_BASE)
 	if err != nil {
 		err = installErr
@@ -30,16 +33,17 @@ func (m Media) CheckSupport() (err error) {
 	return
 }
 
-func (m Media) Run() {
-	if len(m.Inputs) == 0 || m.Output == "" {
+func (m Compose) Run() error {
+	if m.InputGIF == "" || m.InputMp3 == "" || m.Output == "" {
 		fmt.Printf("must have input")
-		return
+		return inputErr
 	}
+
 	c := exec.Command(CMD_BASE,
-		"-i", "test.gif",
-		"-i", "test.mp3",
+		"-i", m.InputGIF,
 		"-t", m.Time,
 		"-ss", m.StartTime,
+		"-i", m.InputMp3,
 		"-c:v", m.VideoCode,
 		"-c:a", m.AudioCode,
 		"-b:a", m.Bitrate,
@@ -48,7 +52,9 @@ func (m Media) Run() {
 	out, err := c.CombinedOutput()
 	if err != nil {
 		fmt.Printf("run cmd error %s \r\n", err)
+		return cmdErr
 	}
 	fmt.Printf("cmd out put: \r\n")
 	fmt.Printf("%s", out)
+	return nil
 }

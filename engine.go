@@ -25,7 +25,7 @@ func engine() *gin.Engine {
 	r.Static("/examples", "./examples/web")
 	// for upload files
 	// TODO unsafe for access!
-	// r.Static("/upload", "./upload")
+	r.Static("/upload", "./upload")
 	return r
 }
 
@@ -34,5 +34,5 @@ func result(code int, message string, result gin.H) gin.H {
 }
 
 func getFileType(file *multipart.FileHeader) string {
-	return file.Header.Get("FILE_CONTENT_TYPE")
+	return file.Header.Get(FILE_CONTENT_TYPE)
 }

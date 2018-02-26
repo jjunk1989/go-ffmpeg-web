@@ -14,7 +14,7 @@ func handleUpload(c *gin.Context) {
 	fmt.Println("file name", file.Filename)
 	fmt.Println("flle type", file.Header.Get("Content-Type"))
 
-	// err := c.SaveUploadedFile(file, "./upload/"+file.Filename)
+	// err := c.SaveUploadedFile(file, UPLOAD_BASE+file.Filename)
 
 	// if err != nil {
 	//	fmt.Println("save file failed", err)
