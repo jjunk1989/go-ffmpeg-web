@@ -26,7 +26,9 @@ func engine() *gin.Engine {
 
 	// for web test
 	r.Static("/examples", "./examples/web")
-
+	// for upload files
+	// TODO unsafe for access!
+	// r.Static("/upload", "./upload")
 	return r
 }
 
