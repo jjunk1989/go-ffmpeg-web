@@ -1,8 +1,18 @@
 package main
 
 import (
-	_ "github.com/gin-gonic/gin"
+	"github.com/sony/sonyflake"
 )
+
+var sf *sonyflake.Sonyflake
+
+func init() {
+	var st sonyflake.Settings
+	sf = sonyflake.NewSonyflake(st)
+	if sf == nil {
+		panic("sonyflake not created")
+	}
+}
 
 func main() {
 

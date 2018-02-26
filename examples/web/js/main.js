@@ -45,7 +45,7 @@ $(document).ready(function() {
 		if ($("#gif")[0].files.length > 0) {
 			$("#gif").next().text("开始上传")
 			var gif = $("#gif")[0].files[0]
-			formData.append("gif", gif);  
+			formData.append("files", gif);  
 			console.log("upload form data", formData);
 
             $.ajax({
