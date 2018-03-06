@@ -21,5 +21,5 @@ func main() {
 
 	// r.Run(":3000")
 
-	log()
+	testlog()
 }
