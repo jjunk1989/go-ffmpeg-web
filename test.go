@@ -3,7 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+	_ "os"
 	"os/exec"
+	_ "strconv"
+	"sync"
+	_ "time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,4 +57,28 @@ func testCmd() (res int) {
 	fmt.Printf("cmd out put: \r\n")
 	fmt.Printf("%s", out)
 	return
+}
+
+func testlog() {
+	var wg sync.WaitGroup
+	lock := new(sync.RWMutex)
+
+	for i := 0; i < 1000; i += 3 {
+		go func(i int) {
+			defer lock.Unlock()
+			defer wg.Done()
+			lock.Lock()
+			logan.Info("test info", i)
+			logan.Warn("test warn", i+1)
+			logan.Error("test error", i+2)
+		}(i)
+		wg.Add(1)
+	}
+	/*
+		err = ioutil.WriteFile("log/test.log", []byte("test log file"), 0755)
+		if err != nil {
+			fmt.Println("write file err", err)
+		}
+	*/
+	wg.Wait()
 }
