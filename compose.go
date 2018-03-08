@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func handleCompose(c *gin.Context) {
-	fmt.Println("start  compose")
+	logan.Info("start  compose")
 
 	// Multipart form
 	form, _ := c.MultipartForm()
@@ -19,12 +18,12 @@ func handleCompose(c *gin.Context) {
 		return
 	}
 	if getFileType(files[0]) != MIME_GIF {
-		fmt.Println("file1", files[0].Filename, getFileType(files[0]))
+		logan.Info("file1", files[0].Filename, getFileType(files[0]))
 		c.JSON(http.StatusOK, result(RESULT_ERR, "wrong gif file type", gin.H{}))
 		return
 	}
 	if getFileType(files[1]) != MIME_MP3 {
-		fmt.Println("file2", files[0].Filename, getFileType(files[1]))
+		logan.Info("file2", files[0].Filename, getFileType(files[1]))
 		c.JSON(http.StatusOK, result(RESULT_ERR, "wrong mp3 file type", gin.H{}))
 		return
 	}
@@ -41,11 +40,13 @@ func handleCompose(c *gin.Context) {
 		c.JSON(http.StatusOK, result(RESULT_ERR, "save mp3 err"+err.Error(), gin.H{}))
 		return
 	}
+	time := c.DefaultPostForm("time", "5")
+	startTime, _ := strconv.Atoi(c.DefaultPostForm("startTime", "0"))
 	com := Compose{
 		InputGIF:    t.localFiles[0],
 		InputMp3:    t.localFiles[1],
-		Time:        "5",
-		StartTime:   "00:00:00",
+		Time:        time,
+		StartTime:   formatTimeString(startTime),
 		VideoCode:   "libx264",
 		AudioCode:   "aac",
 		VideoFormat: "scale=420:-2,format=yuv420p",

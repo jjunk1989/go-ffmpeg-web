@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+
 	"os/exec"
 )
 
@@ -35,7 +35,7 @@ func (m Compose) CheckSupport() (err error) {
 
 func (m Compose) Run() error {
 	if m.InputGIF == "" || m.InputMp3 == "" || m.Output == "" {
-		fmt.Printf("must have input")
+		logan.Error("must have input")
 		return inputErr
 	}
 
@@ -51,10 +51,10 @@ func (m Compose) Run() error {
 		m.Output)
 	out, err := c.CombinedOutput()
 	if err != nil {
-		fmt.Printf("run cmd error %s \r\n", err)
+		logan.Error("run cmd error %s \r\n", err)
 		return cmdErr
 	}
-	fmt.Printf("cmd out put: \r\n")
-	fmt.Printf("%s", out)
+	logan.Info("cmd out put: \r\n")
+	logan.Printf("%s", out)
 	return nil
 }

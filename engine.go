@@ -1,19 +1,21 @@
 package main
 
 import (
+	"io"
 	"mime/multipart"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
 func engine() *gin.Engine {
+	gin.DisableConsoleColor()
+	gin.DefaultWriter = io.MultiWriter(ginLogan.File, os.Stdout)
 
 	r := gin.Default()
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	r.MaxMultipartMemory = 10 << 20 // 10 MiB
 
-	// use file log
-	r.Use(gin.LoggerWithWriter(ginLogan.File))
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.Recovery())
 
