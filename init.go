@@ -9,11 +9,15 @@ import (
 // for task id
 var sf *sonyflake.Sonyflake
 var logan *Logan
+var ginLogan *Logan
 
 func init() {
 	// init log
-	logan = newLogan()
+	logan = newLogan("log", "log.log")
 	logan.initDir()
+	ginLogan = newLogan("log", "access.log")
+	ginLogan.initDir()
+
 	// init upload folder
 	_, err := os.Stat("upload")
 	if err != nil {

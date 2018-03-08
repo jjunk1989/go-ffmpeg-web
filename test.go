@@ -63,7 +63,7 @@ func testlog() {
 	var wg sync.WaitGroup
 	lock := new(sync.RWMutex)
 
-	for i := 0; i < 1000; i += 3 {
+	for i := 0; i < 10000; i += 3 {
 		go func(i int) {
 			defer lock.Unlock()
 			defer wg.Done()

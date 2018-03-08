@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -14,19 +14,14 @@ type Logan struct {
 	FileName string
 	File     *os.File
 	lock     *sync.RWMutex
-	buf      *bytes.Buffer
 	logger   *log.Logger
 }
 
-func newLogan() *Logan {
-	var buf bytes.Buffer
-
+func newLogan(path string, name string) *Logan {
 	return &Logan{
-		Path:     "log",
-		FileName: "log.log",
+		Path:     path,
+		FileName: name,
 		lock:     new(sync.RWMutex),
-		buf:      &buf,
-		logger:   log.New(&buf, "", log.Ldate|log.Ltime),
 	}
 }
 
@@ -46,6 +41,10 @@ func (l Logan) initDir() (err error) {
 // short for Openfile
 func (l *Logan) open() (err error) {
 	l.File, err = os.OpenFile(filepath.Join(l.Path, l.FileName), os.O_APPEND|os.O_CREATE, 0755)
+	if err != nil {
+		return
+	}
+	l.logger = log.New(l.File, "", log.Ldate|log.Ltime|log.Lshortfile)
 	return
 }
 
@@ -57,19 +56,16 @@ func (l *Logan) close() (err error) {
 
 func (l *Logan) Info(v ...interface{}) {
 	l.logger.SetPrefix("[INFO]: ")
-	l.logger.Println(v...)
-	l.write()
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 func (l *Logan) Warn(v ...interface{}) {
 	l.logger.SetPrefix("[WARN]: ")
-	l.logger.Println(v...)
-	l.write()
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 func (l *Logan) Error(v ...interface{}) {
 	l.logger.SetPrefix("[ERROR]:")
-	l.logger.Println(v...)
-	l.write()
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 func (l *Logan) Panic(v ...interface{}) {
@@ -79,13 +75,5 @@ func (l *Logan) Panic(v ...interface{}) {
 
 func (l *Logan) Printf(format string, v ...interface{}) {
 	l.logger.SetPrefix("")
-	l.logger.Printf(format, v...)
-	l.write()
-}
-
-func (l *Logan) write() {
-	defer l.lock.Unlock()
-	l.lock.Lock()
-	l.File.Write(l.buf.Bytes())
-	l.buf.Reset()
+	l.logger.Output(2, fmt.Sprintf(format, v...))
 }

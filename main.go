@@ -5,8 +5,14 @@ func main() {
 	if err != nil {
 		panic("open log file err" + err.Error())
 	}
+	err = ginLogan.open()
+	if err != nil {
+		panic("open log file err" + err.Error())
+	}
 	defer logan.close()
-	// r := engine()
+	defer ginLogan.close()
 
-	// r.Run(":3000")
+	r := engine()
+
+	r.Run(":3000")
 }
