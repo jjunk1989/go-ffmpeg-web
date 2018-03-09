@@ -1,5 +1,9 @@
 package main
 
+import (
+	"os"
+)
+
 func main() {
 	err := logan.open()
 	if err != nil {
@@ -11,7 +15,7 @@ func main() {
 	}
 	defer logan.close()
 	defer ginLogan.close()
-
+	defer os.RemoveAll(tempDir)
 	r := engine()
 
 	r.Run(":3000")

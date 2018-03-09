@@ -7,6 +7,7 @@ import (
 type Task struct {
 	id         uint64
 	localFiles []string
+	output     string
 }
 
 func NewTask() *Task {

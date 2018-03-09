@@ -7,7 +7,7 @@ const (
 
 const FILE_CONTENT_TYPE = "Content-Type"
 
-const UPLOAD_BASE = "./upload/"
+const UPLOAD_BASE = "upload"
 
 const (
 	MIME_GIF = "image/gif"

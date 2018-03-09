@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -29,8 +30,10 @@ func handleCompose(c *gin.Context) {
 	}
 
 	t := NewTask()
-	t.addLocalFileName(UPLOAD_BASE + strconv.FormatUint(t.id, 10) + ".gif")
-	t.addLocalFileName(UPLOAD_BASE + strconv.FormatUint(t.id, 10) + ".mp3")
+
+	t.addLocalFileName(filepath.Join(tempDir, strconv.FormatUint(t.id, 10)+".gif"))
+	t.addLocalFileName(filepath.Join(tempDir, strconv.FormatUint(t.id, 10)+".gif"))
+	t.output = strconv.FormatUint(t.id, 10) + ".mp4"
 
 	if err := c.SaveUploadedFile(files[0], t.localFiles[0]); err != nil {
 		c.JSON(http.StatusOK, result(RESULT_ERR, "save gif err"+err.Error(), gin.H{}))
@@ -51,11 +54,11 @@ func handleCompose(c *gin.Context) {
 		AudioCode:   "aac",
 		VideoFormat: "scale=420:-2,format=yuv420p",
 		Bitrate:     "128k",
-		Output:      UPLOAD_BASE + strconv.FormatUint(t.id, 10) + ".mp4",
+		Output:      filepath.Join(UPLOAD_BASE, t.output),
 	}
 	if err := com.Run(); err != nil {
 		c.JSON(http.StatusOK, result(RESULT_ERR, "compose err"+err.Error(), gin.H{}))
 		return
 	}
-	c.JSON(http.StatusOK, result(RESULT_SUCCESS, "", gin.H{"video": strconv.FormatUint(t.id, 10) + ".mp4"}))
+	c.JSON(http.StatusOK, result(RESULT_SUCCESS, "", gin.H{"video": t.output}))
 }
