@@ -12,9 +12,9 @@ $(document).ready(function() {
 				return
 			var cost = (Date.now() - s)
 			if (res.code === 0) {
-				$("#check").next().text("连接成功 " + res.result.version + ".耗时： " + cost + "ms")
+				$("#check").next().text("connect success " + res.result.version + ".cost： " + cost + "ms")
 			} else {
-				$("#check").next().text("连接服务器失败" + res.message )
+				$("#check").next().text("connect failed" + res.message )
 			}
 		})
 	})
@@ -26,18 +26,27 @@ $(document).ready(function() {
 			type : "cmd"
 		},
 		function(res) {
-			console.log("测试转换", res)
+			console.log("test conver", res)
 			if (!res) 
 				return
 			var cost = (Date.now() - s)
 			if (res.code === 0) {
-				$("#testConver").next().text("转换成功 " + res.result.version + ".耗时： " + cost + "ms")
+				$("#testConver").next().text("conver failed " + res.result.version + ".cost： " + cost + "ms")
 			} else {
-				$("#testConver").next().text("转换失败" + res.message + ".耗时： " + cost + "ms")
+				$("#testConver").next().text("conver failed" + res.message + ".cost： " + cost + "ms")
 			}
 		})
 	})
-	
+	$("#getTask").on("click", function(e) {
+		var s = Date.now()
+		$.get("/api/task/" + $("#taskId").val(),{} ,function(res) {
+			console.log("test conver", res)
+			if (!res) 
+				return
+			var cost = (Date.now() - s)
+			$("#getTask").next().text(res.message)
+		})
+	})
 	$("#compose").on("click", function(e) {
 		e.preventDefault()
 
@@ -47,9 +56,11 @@ $(document).ready(function() {
 		var formData = new FormData();
 
 		if ($("#gif")[0].files.length > 0 && $("#mp3")[0].files.length > 0) {
-			$("#gif").next().text("开始上传")
+			$("#gif").next().text("start")
 			var gif = $("#gif")[0].files[0]
 			var mp3 = $("#mp3")[0].files[0]
+			formData.append("time", $("#time").val());
+			formData.append("startTime", $("#startTime").val());
 			formData.append("files", gif);  
 			formData.append("files", mp3);
 			console.log("upload form data", formData);
@@ -71,23 +82,36 @@ $(document).ready(function() {
 					var cost = (Date.now() - s)
 					$("#compose").removeAttr("disabled", "disabled")
                     if (data.code == 0) {
-                        $("#compose").next().text("上传成功! " + cost + "ms")
-						$("#composeVideo").attr("src", "/upload/" + data.result.video)
+                        checkTask(data.result.task)
                     } else {
-                        $("#compose").next().text("上传失败" + data.message)
+                        $("#compose").next().text("upload failed" + data.message)
                     }
                 },
                 error: function (e) {
-					console.log("上传失败:", e)
+					console.log("upload failed:", e)
 					$("#compose").removeAttr("disabled", "disabled")
-                    $("#compose").next().text("上传失败:" + e)
+                    $("#compose").next().text("upload failed:" + e)
                 }
             }); 
 		} else {
 			if (!$("#gif")[0].files.length)
-				$("#gif").next().text("请选择 GIF 文件!")
+				$("#gif").next().text("need GIF PLZ!")
 			if (!$("#mp3")[0].files.length)
-				$("#mp3").next().text("请选择 MP3 文件!")
+				$("#mp3").next().text("need MP3 PLZ!")
 		}
 	})
+	
+	function checkTask(tid) {
+		$.get("/api/task/" + tid,{} ,function(res) {
+			console.log("test conver", res)
+			if (res && res.code == 0 && res.result.status == 1){
+				$("#compose").next().text("compose success!")
+				$("#composeVideo").attr("src", "/upload/" + res.result.output)
+			} else {
+				window.setTimeout(function() {
+					checkTask(tid)
+				}, 1000)
+			}
+		})
+	}
 })

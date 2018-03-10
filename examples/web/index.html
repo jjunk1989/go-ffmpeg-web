@@ -32,24 +32,36 @@
 			<h1>FFMPEG-WEB-TEST</h1>
 		</div>
 		<div class="col-md-12 line">	
-			<button class="btn btn-default" id="check">测试连接服务器</button>
+			<button class="btn btn-default" id="check">test connect server</button>
 			<p></p>
 		</div>
 		<div class="col-md-12 line">	
-			<button class="btn btn-default" id="testConver">测试转换</button>
+			<button class="btn btn-default" id="testConver">tesetconver</button>
 			<p></p>
 		</div>
 		<div class="col-md-12 line">
+			<input type="text" id="taskId" value="0">
+			<button class="btn btn-default" id="getTask">task</button>
+			<p></p>
+		</div>
+		<div class="col-md-12 line">
+			<h1>GIF + mp3 => mp4</h1>
 			<form>
 			  <div class="form-group">
-			    <label for="gif">上传 GIF </label>
+ 				<label for="time">time</label>
+			    <input type="text" id="time" value="5">
+				<p class="help-block">Duration time.</p>
+				<label for="startTime">start time</label>
+				<input type="text" id="startTime" value="0">
+				<p class="help-block">start time.</p>
+			    <label for="gif">upload a GIF </label>
 			    <input type="file" id="gif" accept="image/gif">
-			    <p class="help-block">请上传 GIF 文件.</p>
+			    <p class="help-block">please upload gif file.</p>
 				<label for="gif">上传 mp3 </label>
 			    <input type="file" id="mp3" accept="audio/mp3">
-			    <p class="help-block">请上传 mp3 文件.</p>
+			    <p class="help-block">please upload mp3.</p>
 			  </div>
-			  <button type="submit" class="btn btn-default" id="compose">上传合成</button>
+			  <button type="submit" class="btn btn-default" id="compose">START</button>
 			  <p class="help-block"></p>
 			  <video id="composeVideo" autoplay="autoplay" />
 			</form>

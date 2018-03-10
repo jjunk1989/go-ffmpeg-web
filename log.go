@@ -50,6 +50,7 @@ func (l *Logan) open() (err error) {
 
 // short for close file
 func (l *Logan) close() (err error) {
+	l.Info("close log file")
 	err = l.File.Close()
 	return
 }

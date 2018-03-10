@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -30,35 +31,53 @@ func handleCompose(c *gin.Context) {
 	}
 
 	t := NewTask()
+	log.Println("taskid NewTask", t)
+	t.FileType = "mp4"
+	t.Output = strconv.FormatUint(t.Id, 10) + ".mp4"
+	t.Save()
+	log.Println("taskid NewTask Save", t)
 
-	t.addLocalFileName(filepath.Join(tempDir, strconv.FormatUint(t.id, 10)+".gif"))
-	t.addLocalFileName(filepath.Join(tempDir, strconv.FormatUint(t.id, 10)+".gif"))
-	t.output = strconv.FormatUint(t.id, 10) + ".mp4"
+	gFile := filepath.Join(tempDir, strconv.FormatUint(t.Id, 10)+".gif")
+	mFile := filepath.Join(tempDir, strconv.FormatUint(t.Id, 10)+".mp3")
 
-	if err := c.SaveUploadedFile(files[0], t.localFiles[0]); err != nil {
+	if err := c.SaveUploadedFile(files[0], gFile); err != nil {
 		c.JSON(http.StatusOK, result(RESULT_ERR, "save gif err"+err.Error(), gin.H{}))
 		return
 	}
-	if err := c.SaveUploadedFile(files[1], t.localFiles[1]); err != nil {
+	if err := c.SaveUploadedFile(files[1], mFile); err != nil {
 		c.JSON(http.StatusOK, result(RESULT_ERR, "save mp3 err"+err.Error(), gin.H{}))
 		return
 	}
 	time := c.DefaultPostForm("time", "5")
 	startTime, _ := strconv.Atoi(c.DefaultPostForm("startTime", "0"))
-	com := Compose{
-		InputGIF:    t.localFiles[0],
-		InputMp3:    t.localFiles[1],
-		Time:        time,
-		StartTime:   formatTimeString(startTime),
-		VideoCode:   "libx264",
-		AudioCode:   "aac",
-		VideoFormat: "scale=420:-2,format=yuv420p",
-		Bitrate:     "128k",
-		Output:      filepath.Join(UPLOAD_BASE, t.output),
-	}
-	if err := com.Run(); err != nil {
-		c.JSON(http.StatusOK, result(RESULT_ERR, "compose err"+err.Error(), gin.H{}))
-		return
-	}
-	c.JSON(http.StatusOK, result(RESULT_SUCCESS, "", gin.H{"video": t.output}))
+
+	log.Println("taskid", t)
+
+	t.Run(func(task *Task) {
+		log.Println("taskid NewTask Save", task)
+		com := Compose{
+			InputGIF:    gFile,
+			InputMp3:    mFile,
+			Time:        time,
+			StartTime:   formatTimeString(startTime),
+			VideoCode:   "libx264",
+			AudioCode:   "aac",
+			VideoFormat: "scale=420:-2,format=yuv420p",
+			Bitrate:     "128k",
+			Output:      filepath.Join(UPLOAD_BASE, t.Output),
+		}
+
+		if err := com.Run(); err != nil {
+			task.Status = 3
+			task.Save()
+			logan.Info("task err", task.Id)
+			return
+		}
+		logan.Info("task finish", task.Id)
+		task.Status = 1
+		task.Save()
+	})
+
+	log.Println("taskid return", t, t.Id)
+	c.JSON(http.StatusOK, result(RESULT_SUCCESS, "", gin.H{"task": strconv.FormatUint(t.Id, 10)}))
 }

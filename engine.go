@@ -23,6 +23,7 @@ func engine() *gin.Engine {
 
 	{
 		api.GET("test", handleTest)
+		api.GET("task/:tid", handleTask)
 		api.POST("upload", handleUpload)
 		api.POST("compose", handleCompose)
 		api.POST("converter", handleConverter)
