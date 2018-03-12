@@ -7,7 +7,7 @@ $(document).ready(function() {
 			type : "version"
 		},
 		function(res) {
-			console.log("连接服务器", res)
+			console.log("test connect server", res)
 			if (!res) 
 				return
 			var cost = (Date.now() - s)
@@ -53,17 +53,17 @@ $(document).ready(function() {
 		console.log("on compose")
 		var s = Date.now()
 		$("#compose").attr("disabled", "disabled")
-		var formData = new FormData();
+		var formData = new FormData()
 
 		if ($("#gif")[0].files.length > 0 && $("#mp3")[0].files.length > 0) {
 			$("#gif").next().text("start")
 			var gif = $("#gif")[0].files[0]
 			var mp3 = $("#mp3")[0].files[0]
-			formData.append("time", $("#time").val());
+			formData.append("time", $("#time").val())
 			formData.append("startTime", $("#startTime").val());
-			formData.append("files", gif);  
-			formData.append("files", mp3);
-			console.log("upload form data", formData);
+			formData.append("files", gif)
+			formData.append("files", mp3)
+			console.log("upload form data", formData)
 
             $.ajax({
                 url: "/api/compose",
@@ -82,6 +82,7 @@ $(document).ready(function() {
 					var cost = (Date.now() - s)
 					$("#compose").removeAttr("disabled", "disabled")
                     if (data.code == 0) {
+						$("#compose").next().text("upload success. start compose" + data.message)
                         checkTask(data.result.task)
                     } else {
                         $("#compose").next().text("upload failed" + data.message)
@@ -100,7 +101,14 @@ $(document).ready(function() {
 				$("#mp3").next().text("need MP3 PLZ!")
 		}
 	})
-	
+	$("#gif").on("change", function(e) {
+		console.log(e)
+		$("#gif").next().text("got a gif")
+	})
+	$("#mp3").on("change", function(e) {
+		console.log(e)
+		$("#mp3").next().text("got a mp3")
+	})
 	function checkTask(tid) {
 		$.get("/api/task/" + tid,{} ,function(res) {
 			console.log("test conver", res)
