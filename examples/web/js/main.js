@@ -104,9 +104,13 @@ $(document).ready(function() {
 	function checkTask(tid) {
 		$.get("/api/task/" + tid,{} ,function(res) {
 			console.log("test conver", res)
-			if (res && res.code == 0 && res.result.status == 1){
+			if (!res || res.code != 0)
+				return;
+			if (res.result.status == 1){
 				$("#compose").next().text("compose success!")
 				$("#composeVideo").attr("src", "/upload/" + res.result.output)
+			} else if (res.result.status == 3) {
+				$("#compose").next().text("compose failed!")	
 			} else {
 				window.setTimeout(function() {
 					checkTask(tid)

@@ -14,7 +14,7 @@ func engine() *gin.Engine {
 
 	r := gin.Default()
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
-	r.MaxMultipartMemory = 10 << 20 // 10 MiB
+	// r.MaxMultipartMemory = 10 << 20 // 10 MiB
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.Recovery())

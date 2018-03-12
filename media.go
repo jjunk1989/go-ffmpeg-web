@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-
 	"os/exec"
 )
 
@@ -46,12 +45,16 @@ func (m Compose) Run() error {
 		"-i", m.InputMp3,
 		"-c:v", m.VideoCode,
 		"-c:a", m.AudioCode,
+		// [aac @ 0x22b1a80] The encoder 'aac' is experimental but experimental
+		// codecs are not enabled,
+		// add '-strict -2' if you want to use it.
+		"-strict", "-2",
 		"-b:a", m.Bitrate,
 		"-vf", m.VideoFormat,
 		m.Output)
 	out, err := c.CombinedOutput()
 	if err != nil {
-		logan.Error("run cmd error %s \r\n", err)
+		logan.Error("run cmd error", err)
 		return cmdErr
 	}
 	logan.Info("cmd out put: \r\n")

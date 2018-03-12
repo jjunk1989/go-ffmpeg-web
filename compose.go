@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	_ "log"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -31,11 +31,10 @@ func handleCompose(c *gin.Context) {
 	}
 
 	t := NewTask()
-	log.Println("taskid NewTask", t)
+
 	t.FileType = "mp4"
 	t.Output = strconv.FormatUint(t.Id, 10) + ".mp4"
 	t.Save()
-	log.Println("taskid NewTask Save", t)
 
 	gFile := filepath.Join(tempDir, strconv.FormatUint(t.Id, 10)+".gif")
 	mFile := filepath.Join(tempDir, strconv.FormatUint(t.Id, 10)+".mp3")
@@ -51,10 +50,8 @@ func handleCompose(c *gin.Context) {
 	time := c.DefaultPostForm("time", "5")
 	startTime, _ := strconv.Atoi(c.DefaultPostForm("startTime", "0"))
 
-	log.Println("taskid", t)
-
 	t.Run(func(task *Task) {
-		log.Println("taskid NewTask Save", task)
+
 		com := Compose{
 			InputGIF:    gFile,
 			InputMp3:    mFile,
@@ -70,7 +67,7 @@ func handleCompose(c *gin.Context) {
 		if err := com.Run(); err != nil {
 			task.Status = 3
 			task.Save()
-			logan.Info("task err", task.Id)
+			logan.Error("task err", err, task.Id)
 			return
 		}
 		logan.Info("task finish", task.Id)
@@ -78,6 +75,5 @@ func handleCompose(c *gin.Context) {
 		task.Save()
 	})
 
-	log.Println("taskid return", t, t.Id)
 	c.JSON(http.StatusOK, result(RESULT_SUCCESS, "", gin.H{"task": strconv.FormatUint(t.Id, 10)}))
 }

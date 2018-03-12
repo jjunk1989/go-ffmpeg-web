@@ -30,6 +30,7 @@ func (l Logan) initDir() (err error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
+			// use 0777 for test. unsafe
 			os.Mkdir(l.Path, 0755)
 		} else {
 			return
@@ -40,7 +41,7 @@ func (l Logan) initDir() (err error) {
 
 // short for Openfile
 func (l *Logan) open() (err error) {
-	l.File, err = os.OpenFile(filepath.Join(l.Path, l.FileName), os.O_APPEND|os.O_CREATE, 0755)
+	l.File, err = os.OpenFile(filepath.Join(l.Path, l.FileName), os.O_APPEND|os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
 		return
 	}

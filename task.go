@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,12 +11,12 @@ type Task struct {
 	Id     uint64 `gorm: PRIMARY_KEY`
 	Output string `gorm:"type:varchar(255);"`
 	// 0 = int, 1 = finish, 2 = running, 3 = err
-	Status    uint8
-	FileType  string `gorm:"type:varchar(255);"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
-	lock      *sync.RWMutex
+	Status   uint8
+	FileType string `gorm:"type:varchar(255);"`
+	// CreatedAt time.Time
+	// UpdatedAt time.Time
+	// DeletedAt time.Time
+	lock *sync.RWMutex
 }
 
 type TaskFunction func(*Task)

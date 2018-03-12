@@ -39,15 +39,19 @@ func testCmd() (res int) {
 	}
 	fmt.Printf("find path is %s \r\n", path)
 	c := exec.Command("ffmpeg",
-		"-i", "test.gif",
+		"-i", "./source/test.gif",
 		"-t", "5",
 		"-ss", "00:00:00",
-		"-i", "test.mp3",
+		"-i", "./source/test.mp3",
 		"-c:v", "libx264",
 		"-c:a", "aac",
+		// [aac @ 0x22b1a80] The encoder 'aac' is experimental but experimental
+		// codecs are not enabled,
+		// add '-strict -2' if you want to use it.
+		"-strict", "-2",
 		"-b:a", "128k",
 		"-vf", "scale=420:-2,format=yuv420p",
-		"out.mp4")
+		"./source/out.mp4")
 
 	out, err := c.CombinedOutput()
 	if err != nil {
